@@ -1,0 +1,17 @@
+{
+    "c-cpp-compile-run.run-in-external-terminal": true,
+    "files.associations": {
+        "iostream": "cpp",
+        "define.h": "c",
+        "staticlib.h": "c",
+        "ostream": "cpp",
+        "vector": "cpp",
+        "xstring": "cpp",
+        "fstream": "c",
+        "string": "c",
+        "deque": "cpp",
+        "map": "cpp",
+        "xtree": "cpp",
+        "xiosbase": "cpp"
+    }
+}
