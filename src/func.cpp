@@ -84,8 +84,8 @@ void makeNFA() {
     }
 }
 
-bool isFirstItem(Item *item, char &c) {
-    if (item -> dot == 0 && item -> left[0] == c)
+bool isFirstItem(Item *item, char &symbol) {
+    if (item -> dot == 0 && item -> left[0] == symbol)
         return 1;
     return -1;
 }

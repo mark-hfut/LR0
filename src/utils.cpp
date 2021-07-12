@@ -32,6 +32,22 @@ void printExtendedItems () {
     cout << "---------------------------------------------------" << endl << endl;
 }
 
+void printNFA () {
+    vector <Item*> ::iterator it;
+    multimap <char, int> ::iterator iter;
+    cout << "---------------the NFA is as follows---------------" << endl;
+    for (it = extendedItems.begin(); it != extendedItems.end(); it++) {
+        string str = "";
+        str = to_string((*it) -> id) + ". " + (*it) -> left + " -> " \
+        + (*it) -> right.insert((*it) -> dot, "·");
+        for (iter = (*it) -> NFAitem.begin(); iter != (*it) -> NFAitem.end(); iter++) {
+            str += " (" + to_string(iter -> first) + ", " + to_string(iter -> second) + ") ";
+        }
+        cout << str << endl;
+    }
+    cout << "---------------------------------------------------" << endl << endl;
+}
+
 bool isTerminator (char &c) {
     set <char> ::iterator it;
     for (it = terminators.begin(); it != terminators.end(); it++) {

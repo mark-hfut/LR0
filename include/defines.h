@@ -54,6 +54,7 @@ void printGrammar ();
 void printExtendedItems ();
 bool isTerminator (char &c);
 bool isNon_Terminator (char &c);
+bool isFirstItem(Item *item, char &c);
 
 
 bool canMoveDot (const string &str);
@@ -85,6 +86,7 @@ void makeNTSet (const string &str);
 void makeGenerativeSet (const string &s1, const string s3);
 void extendItems ();
 void makeItemSetFamily ();
+void extendCLOSURE(ItemSet &itemSet);
 
 
 void makeGenerativeSet (const string &s1, const string s3);
