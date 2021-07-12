@@ -1,4 +1,4 @@
-#pragma ONCE
+#pragma once
 #include <iostream>
 #include <map>
 #include <string>
@@ -30,15 +30,17 @@ struct Generative {             //产生式
 vector <Generative*> vt;        //记录已读入的产生式
 
 struct Item {
-    int id;
-    char left;
+    int id = 0;
+    string left;
     string right;
     int dot = 0;
+    multimap <char, int> NFAitem;
 };
+vector <Item*> extendedItems;
 
 struct ItemSet {                //确定有限自动机的单个项目
     int id;
-    vector <Item> item;
+    vector <Item*> thisItemSet;
     map <char, int> next;
 };
 vector <ItemSet*> itemSetFam;   //Item set specific family项目规范集族
@@ -47,7 +49,13 @@ vector <ItemSet*> itemSetFam;   //Item set specific family项目规范集族
 
 
 /*-------------------------utils-------------------------*/
-int getDotPos (const string &str);
+void printTAndNT ();
+void printGrammar ();
+void printExtendedItems ();
+bool isTerminator (char &c);
+bool isNon_Terminator (char &c);
+
+
 bool canMoveDot (const string &str);
 void moveDot (string &str);
 string deleteDot (const string &str);
@@ -64,13 +72,23 @@ string leftAddDot (string &str);
 void resetStack ();
 void addRear (const string &str);
 void makeTSet (const string &str);
-void makeNTSet (string &str);
+void makeNTSet (const string &str);
 void printGrammar ();
 
 /*-------------------------end-------------------------*/
 
 
 /*-------------------------functions-------------------------*/
+void readIn ();
+void makeTSet (const string &str);
+void makeNTSet (const string &str);
+void makeGenerativeSet (const string &s1, const string s3);
+void extendItems ();
+void makeItemSetFamily ();
+
+
+void makeGenerativeSet (const string &s1, const string s3);
+void makeItemSetFamily ();
 void extend (vector <string> &left, vector <string> &right, string x);
 void extendFirstLine (ItemSet *& itemSet);
 void createItem (string lf, string rg);

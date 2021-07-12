@@ -291,8 +291,8 @@ void in(){/*读入终结符合非终结符以及产生式到一维数组中*/
 		vt.push_back(tmp);
 	}
  
-	cout<<"The grammar (generated form) read from the file after broadening is as followed:"<<endl; 
-	cout<<"The grammar (generated form) read from the file after broadening is as followed:"<<endl; 
+	cout<<"The grammar (generated form) read from the file after broadening is as follows:"<<endl; 
+	cout<<"The grammar (generated form) read from the file after broadening is as follows:"<<endl; 
 	int size = vt.size();
 	for(int i = 1; i < size; i++){
 		cout<<vt[i]->left<<"->"<<vt[i]->right<<endl;
@@ -414,7 +414,7 @@ void initTable(){///填写ACITON表和GOTO表
 void checkTable(){//检查GOTO表和ACTION表
 	
 	cout<<"-----------ACTION table without data is filled with error, GOTO table without data is filled with -1-----------"<<endl; 
-	cout<<"-----------ACTION table and GOTO table are as followed---------------------------"<<endl; 
+	cout<<"-----------ACTION table and GOTO table are as follows---------------------------"<<endl; 
 	cout<<setw(6)<<setiosflags(ios::left)<<"status"<<"	";
 	for(int i = 0; i < pf; i++){
 		//cout<<final[i]<<"		";
