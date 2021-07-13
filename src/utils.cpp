@@ -24,9 +24,9 @@ void printExtendedItems () {
     vector <Item*> ::iterator it;
     cout << "--------the extended item set is as follows--------" << endl;
     for (it = extendedItems.begin(); it != extendedItems.end(); it++) {
-        string str = "";
+        string str = "", right = (*it) -> right;
         str = to_string((*it) -> id) + ". " + (*it) -> left + " -> " \
-        + (*it) -> right.insert((*it) -> dot, "·");
+        + right.insert((*it) -> dot, "·");
         cout << str << endl;
     }
     cout << "---------------------------------------------------" << endl << endl;
@@ -37,12 +37,11 @@ void printNFA () {
     multimap <char, int> ::iterator iter;
     cout << "---------------the NFA is as follows---------------" << endl;
     for (it = extendedItems.begin(); it != extendedItems.end(); it++) {
-        string str = "";
+        string str = "", right = (*it) -> right;
         str = to_string((*it) -> id) + ". " + (*it) -> left + " -> " \
-        + (*it) -> right.insert((*it) -> dot, "·");
-        for (iter = (*it) -> NFAitem.begin(); iter != (*it) -> NFAitem.end(); iter++) {
-            str += " (" + to_string(iter -> first) + ", " + to_string(iter -> second) + ") ";
-        }
+        + right.insert((*it) -> dot, "·");
+        for (iter = (*it) -> NFAitem.begin(); iter != (*it) -> NFAitem.end(); iter++)
+            str += " (" + string(1, iter -> first) + ", " + to_string(iter -> second) + ") ";
         cout << str << endl;
     }
     cout << "---------------------------------------------------" << endl << endl;

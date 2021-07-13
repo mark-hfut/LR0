@@ -7,6 +7,7 @@
 #include <stack>
 #include <vector>
 #include <set>
+#include <queue>
 #include <iomanip>
 #include <sstream>
 using namespace std;
@@ -43,7 +44,7 @@ struct ItemSet {                //确定有限自动机的单个项目
     vector <Item*> thisItemSet;
     map <char, int> next;
 };
-vector <ItemSet*> itemSetFam;   //Item set specific family项目规范集族
+set <ItemSet*> itemSetFam;   //Item set specific family项目规范集族
 
 /*-------------------------end-------------------------*/
 
@@ -87,6 +88,7 @@ void makeGenerativeSet (const string &s1, const string s3);
 void extendItems ();
 void makeItemSetFamily ();
 void extendCLOSURE(ItemSet &itemSet);
+Item* returnItemById(int &id);
 
 
 void makeGenerativeSet (const string &s1, const string s3);

@@ -8,4 +8,6 @@ int main() {
     printGrammar();
     extendItems();
     printExtendedItems();
+    makeNFA();
+    printNFA();
 }
