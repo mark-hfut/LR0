@@ -10,4 +10,6 @@ int main() {
     printExtendedItems();
     makeNFA();
     printNFA();
+    makeItemSetFamily();
+    printItemSetFamily();
 }

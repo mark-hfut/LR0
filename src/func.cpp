@@ -16,8 +16,8 @@ void readIn(){
         makeNTSet(s3);
         makeGenerativeSet(s1, s3);
     }
-    printf("Grammar read from file is as follows\n");
-    // printGrammar();
+    // printf("Grammar read from file is as follows\n");
+    printGrammar();
 }
 
 void makeTSet (const string &str) {
@@ -35,8 +35,8 @@ void makeNTSet (const string &str) {
 
 void makeGenerativeSet (const string &s1, const string s3) {
     Generative *tmp = new Generative();
-    tmp -> left = s1;
-    tmp -> right = s3;
+    tmp->left = s1;
+    tmp->right = s3;
     vt.push_back(tmp);
 }
 
@@ -44,12 +44,12 @@ void extendItems() {
     int counter = 0, i = 0;
     vector <Generative*> ::iterator it;
     for (it = vt.begin(); it != vt.end(); it++) 
-        for (i = 0; i <= (*it) -> right.size(); i++){
+        for (i = 0; i <= (*it)->right.size(); i++){
             Item *tmp = new Item();
-            tmp -> id = counter;
-            tmp -> left = (*it) -> left;
-            tmp -> right = (*it) -> right;
-            tmp -> dot = i;
+            tmp->id = counter;
+            tmp->left = (*it)->left;
+            tmp->right = (*it)->right;
+            tmp->dot = i;
             extendedItems.push_back(tmp);
             counter++;
         }
@@ -58,56 +58,84 @@ void extendItems() {
 void makeNFA() {
     vector <Item*> ::iterator it1, it2;
     for (it1 = extendedItems.begin(); it1 != extendedItems.end(); it1++) {     //非终结符的情况
-        int dot = (*it1) -> dot;
-        string right = (*it1) -> right;
-        char symbol = right[(*it1) -> dot];
-        multimap <char, int> *mp = &((*it1) -> NFAitem);
+        int dot = (*it1)->dot;
+        string right = (*it1)->right;
+        char symbol = right[(*it1)->dot];
+        multimap <char, int> *mp = &((*it1)->NFAitem);
         if (dot < right.size()) {
-            (*mp).insert(multimap <char, int> ::value_type(symbol, (*it1) -> id + 1));
+            (*mp).insert(multimap <char, int> ::value_type(symbol, (*it1)->id + 1));
             if (isNon_Terminator(symbol))
                 for (it2 = extendedItems.begin(); it2 != extendedItems.end(); it2++)
                     if (isFirstItem((*it2), symbol))
-                        (*mp).insert(multimap <char, int> ::value_type('e', (*it2) -> id));
+                        (*mp).insert(multimap <char, int> ::value_type('ε', (*it2)->id));
         }
     }
 }
 
 bool isFirstItem(Item *item, char &symbol) {
-    if (item -> dot == 0 && item -> left[0] == symbol)
+    if (item->dot == 0 && item->left[0] == symbol)
         return true;
     return false;
 }
 
 void makeItemSetFamily () {
-    queue <Item*> Q;
+    queue <ItemSet*> Q;
     Item *item = extendedItems[0];
     multimap <char, int> ::iterator iter;
+    vector <Item*> ::iterator it;
     set <int> visited;          //用set不用vector是因为set有find函数
     int counter = 0;
-    Q.push((item));
-
+    
+    ItemSet *itemSet = new ItemSet();       // 初始化第一个itemSet并将第一个item塞进去
+    itemSet->id = counter;
+    itemSet->thisItemSet.push_back(item);
+    Q.push((itemSet));
     while (!Q.empty()) {
-        item = Q.front();
+        itemSet = Q.front();
         Q.pop();
-        ItemSet *itemSet = new ItemSet();
-        itemSet -> id = counter;
-        itemSet -> thisItemSet.push_back(item);
-        for (iter = item -> NFAitem.begin(); iter != item -> NFAitem.end(); iter++) {   //遍历map，往这个ItemSet里塞东西
-            if (iter -> first == 'e') {
-                item = returnItemById(iter -> second);
-                itemSet -> thisItemSet.push_back(item);
+        cout << Q.size() << endl;
+        item = itemSet->thisItemSet[0];
+
+        for (iter = item->NFAitem.begin(); iter != item->NFAitem.end(); iter++) {   //遍历map，往这个ItemSet里塞东西，相当于bfs中的初始化当前节点
+            if (iter->first == 'ε') {
+                item = returnItemById(iter->second);
+                itemSet->thisItemSet.push_back(item);
             }
         }
+        
+        for (it = itemSet->thisItemSet.begin(); it != itemSet->thisItemSet.end(); it++) {   //遍历这个item集里的item，进行初始化和连接其他item集，相当与bfs中的拓展可连接节点
+            for (iter = (*it)->NFAitem.begin(); iter != (*it)->NFAitem.end(); iter++) {
+                if (iter->first != 'ε') {
+                    Item *nextItem = returnItemById(iter->second);
+                    ItemSet *nextItemSet = new ItemSet();
+                    nextItemSet->id = counter++;
+                    itemSet->next[iter->first] = iter->second;
+                    
+                    
+                    if (visited.find(itemSet->id) != visited.end()) {
+                        
+                        counter++;
+                        
+                        nextItemSet->id = counter;
+                        nextItemSet->thisItemSet.push_back(nextItem);
+                        Q.push(nextItemSet);
+                    }
+                        
+                    itemSetFam.insert(itemSet);
+                }
+            }
+        }
+        visited.insert(itemSet->id);
     }
     // for (it = extendedItems.begin(); it != extendedItems.end(); it++) {
-    //     for (iter = (*it) -> NFAitem.begin(); iter != (*it) -> NFAitem.end(); iter++) {
+    //     for (iter = (*it)->NFAitem.begin(); iter != (*it)->NFAitem.end(); iter++) {
     //         ItemSet *itemSet = new ItemSet();
-    //         itemSet -> id = counter;
-    //         if (iter -> first == 'e')
-    //             itemSet -> thisItemSet.push_back(iter -> second);
+    //         itemSet->id = counter;
+    //         if (iter->first == 'e')
+    //             itemSet->thisItemSet.push_back(iter->second);
     //         itemSetFam.insert(itemSet);
     //     }
-    //     visited.insert((*it) -> id);
+    //     visited.insert((*it)->id);
 
 
 }
@@ -115,7 +143,7 @@ void makeItemSetFamily () {
 Item* returnItemById(int &id) {
     vector <Item*> ::iterator it;
     for (it = extendedItems.begin(); it != extendedItems.end(); it++)
-        if ((*it) -> id == id)
+        if ((*it)->id == id)
             return (*it);
 
 }
@@ -124,21 +152,21 @@ Item* returnItemById(int &id) {
 //     vector <Item*> ::iterator it;
 //     it = extendedItems.begin();
 //     ItemSet *tmp = new ItemSet();
-//     tmp -> id = 0;
-//     tmp -> thisItemSet.push_back(*it);
+//     tmp->id = 0;
+//     tmp->thisItemSet.push_back(*it);
 //     extendCLOSURE(*tmp);
-//     for (it = tmp -> thisItemSet.begin(); it != tmp -> thisItemSet.end(); it++){
-//         // tmp -> next[(*it) -> right[(*it) -> dot]] = 
+//     for (it = tmp->thisItemSet.begin(); it != tmp->thisItemSet.end(); it++){
+//         // tmp->next[(*it)->right[(*it)->dot]] = 
 //     }
 // }
 
 // void extendCLOSURE(ItemSet &itemSet) {
 //     vector <Item*> ::iterator it1, it2;
 //     for (it1 = itemSet.thisItemSet.begin(); it1 !=itemSet.thisItemSet.end(); it1++)
-//         if ((*it1) -> dot < (*it1) -> right.size() \
-//         && isNon_Terminator((*it1) -> right[(*it1) -> dot]))
+//         if ((*it1)->dot < (*it1)->right.size() \
+//         && isNon_Terminator((*it1)->right[(*it1)->dot]))
 //             for (it2 = extendedItems.begin(); it2 != extendedItems.end(); it2++)       //遍历拓展项目集
-//                 if ((*it2) -> left[0] == (*it1) -> right[(*it1) -> dot] \
-//                 && (*it2) -> dot == 0)
+//                 if ((*it2)->left[0] == (*it1)->right[(*it1)->dot] \
+//                 && (*it2)->dot == 0)
 //                     itemSet.thisItemSet.push_back(*it2);
 // }

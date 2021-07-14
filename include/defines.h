@@ -36,6 +36,7 @@ struct Item {
     string right;
     int dot = 0;
     multimap <char, int> NFAitem;
+    bool isPlaced = false;
 };
 vector <Item*> extendedItems;
 
@@ -55,7 +56,7 @@ void printGrammar ();
 void printExtendedItems ();
 bool isTerminator (char &c);
 bool isNon_Terminator (char &c);
-bool isFirstItem(Item *item, char &c);
+bool isFirstItem (Item *item, char &c);
 
 
 bool canMoveDot (const string &str);

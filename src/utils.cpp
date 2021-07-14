@@ -47,6 +47,25 @@ void printNFA () {
     cout << "---------------------------------------------------" << endl << endl;
 }
 
+void printItemSet (ItemSet* itemSet) {
+    vector<Item *> ::iterator it;
+    for (it = itemSet->thisItemSet.begin(); it != itemSet->thisItemSet.end(); it++) {
+        cout << (*it)->id << " " << (*it)->left << " -> " << (*it)->right << endl;
+    }
+}
+
+void printItemSetFamily() {
+    set<ItemSet *> ::iterator it;
+    vector<Item *> iter;
+    cout << "---------the Item Set Family is as follows---------" << endl;
+    for (it = itemSetFam.begin(); it != itemSetFam.end(); it++) {
+        cout << (*it)->id << ": " << endl;
+        ItemSet *itemSet = (*it);
+        printItemSet(itemSet);
+    }
+    cout << "---------------------------------------------------" << endl;
+}
+
 bool isTerminator (char &c) {
     set <char> ::iterator it;
     for (it = terminators.begin(); it != terminators.end(); it++) {
