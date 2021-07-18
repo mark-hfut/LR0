@@ -10,21 +10,23 @@
 #include <queue>
 #include <iomanip>
 #include <sstream>
+#include <algorithm>
 using namespace std;
 
 #define PATH "..\\files\\grammar"
 #define MAXNUM 101
 /*-------------------------data structure-------------------------*/
-set <char> terminators;
-set <char> non_terminators;
+vector <char> terminators;
+vector <char> non_terminators;
 
-map <int, map <string, string> > ACTION_table;
-map <int, map <string, int> > GOTO_table;
+vector<vector<string>> ACTION_table;
+vector<vector<int>> GOTO_table;
 
-stack <char> symbol;
-stack <int> status;
+stack <char> symbolStack;
+stack <int> statusStack;
 
 struct Generative {             //产生式
+    int id = -1;
     string left;
     string right;
 };
@@ -32,20 +34,21 @@ vector <Generative*> vt;        //记录已读入的产生式
 
 struct Item {
     int id = 0;
+    int generativeId = -1;
     string left;
     string right;
     int dot = 0;
     multimap <char, int> NFAitem;
-    bool isPlaced = false;
+    int itemSetNumber = -1;
 };
 vector <Item*> extendedItems;
 
 struct ItemSet {                //确定有限自动机的单个项目
-    int id;
+    int id = 0;
     vector <Item*> thisItemSet;
     map <char, int> next;
 };
-set <ItemSet*> itemSetFam;   //Item set specific family项目规范集族
+vector <ItemSet*> itemSetFam;   //Item set specific family项目规范集族
 
 /*-------------------------end-------------------------*/
 
@@ -57,26 +60,17 @@ void printExtendedItems ();
 bool isTerminator (char &c);
 bool isNon_Terminator (char &c);
 bool isFirstItem (Item *item, char &c);
-
-
-bool canMoveDot (const string &str);
-void moveDot (string &str);
-string deleteDot (const string &str);
-int generativeNum (const string &left, const string &right);
-void printTAndNT ();
-void printTables ();
-void printStatus ();
-string printStatusStack ();
-string printSymbolStakc ();
-string getString ();
-string stringToInt ();
-string excludeLastSymbol (const string &str);
-string leftAddDot (string &str);
-void resetStack ();
-void addRear (const string &str);
-void makeTSet (const string &str);
-void makeNTSet (const string &str);
-void printGrammar ();
+int returnTerminatorId(char c);
+int returnNonTerminatorId(char c);
+Item* returnItemById(int &id);
+bool isExtendedItemInThisSet(int itemId, int itemSetId);
+bool isInTerminators(char c);
+bool isInNonTerminators(char c);
+bool cmp(const ItemSet &a, const ItemSet &b);
+string outStatusStack(stack<int> status);
+string outSymbolStack(stack<char> symbol);
+string getStr(const string &str, const int &p);
+bool isInItemSetFam(int id);
 
 /*-------------------------end-------------------------*/
 
@@ -85,23 +79,10 @@ void printGrammar ();
 void readIn ();
 void makeTSet (const string &str);
 void makeNTSet (const string &str);
-void makeGenerativeSet (const string &s1, const string s3);
-void extendItems ();
+void makeGenerativeSet(const string &s1, const string s3, int &id);
 void makeItemSetFamily ();
-void extendCLOSURE(ItemSet &itemSet);
-Item* returnItemById(int &id);
-
-
-void makeGenerativeSet (const string &s1, const string s3);
-void makeItemSetFamily ();
-void extend (vector <string> &left, vector <string> &right, string x);
-void extendFirstLine (ItemSet *& itemSet);
-void createItem (string lf, string rg);
-int excludeDupli ();
-void addItem ();
-void initFirstItem ();
-void readIn ();
-void initTables ();
-bool startAnalysis (const string &str);
+string solveActionValue(int status, int id);
+int solveGotoValue(int status, int id);
+void startAnalysis();
 
 /*-------------------------end-------------------------*/
